@@ -52,16 +52,25 @@ export default function App({}: Props) {
       >
         {lines.map((line, index) => (
           <line
+            onClick={(e) => {
+              e.stopPropagation();
+              console.log("line is clicked ... ", e.target);
+            }}
             key={index}
             x1={line.x1}
             y1={line.y1}
             x2={line.x2}
             y2={line.y2}
             stroke="black"
+            strokeWidth={3}
           />
         ))}
         {circles.map((circle, index) => (
           <circle
+            onClick={(e) => {
+              e.stopPropagation();
+              console.log("circle is clicked ... ", e.target);
+            }}
             key={index}
             cx={circle.cx}
             cy={circle.cy}
