@@ -5,6 +5,9 @@ type Props = {};
 export default function App({}: Props) {
   const [circles, setCircles] = useState<any>([]);
   const [lines, setLines] = useState<any>([]);
+  const [selectedShapeType, setSelectedShapeType] = useState<
+    "custom-shape" | "line"
+  >("custom-shape");
 
   const handleClick = (e) => {
     e.stopPropagation();
@@ -47,54 +50,82 @@ export default function App({}: Props) {
     }
   };
   return (
-    <div className="border-solid border-red-500 border-4 relative  w-[750px] h-[450px] ">
-      <video
-        src={xy}
-        controls
-        autoPlay={true}
-        loop={true}
-        width={250}
-        height={250}
-        className="w-full h-full absolute left-0 right-0 top-0 bottom-0  z-[-10]"
-      ></video>
-      <svg
-        className="bg-transparent w-full h-full absolute left-0 right-0 top-0 bottom-0  z-60"
-        onClick={(e) => {
-          handleClick(e);
-        }}
-      >
-        {lines.map((line, index) => (
-          <line
-            onClick={(e) => {
-              e.stopPropagation();
-              console.log("line is clicked ... ", e.target);
-            }}
-            key={index}
-            x1={line.x1}
-            y1={line.y1}
-            x2={line.x2}
-            y2={line.y2}
-            stroke="black"
-            strokeWidth={3}
-          />
-        ))}
-        {circles.map((circle, index) => (
-          <circle
-            onClick={(e) => {
-              e.stopPropagation();
-              console.log("clicked on circle ", e.target);
-              if (index === 0) {
-                connectTOFirst(circles[circles.length - 1]);
-              }
-            }}
-            key={index}
-            cx={circle.cx}
-            cy={circle.cy}
-            r={circle.r}
-            fill="red"
-          />
-        ))}
-      </svg>
-    </div>
+    <>
+      <div className="my-2  border-dotted border-2 p-4">
+        <button
+          className={`mx-3 rounded-lg border-2 px-3 py-1 ${
+            selectedShapeType === "line"
+              ? "border-red-500 text-red-500 bg-red-300"
+              : ""
+          } `}
+          onClick={() => {
+            setSelectedShapeType("line");
+          }}
+        >
+          line
+        </button>
+        <button
+          className={`mx-3 rounded-lg border-2 px-3 py-1 ${
+            selectedShapeType === "custom-shape"
+              ? "border-red-500 text-red-500 bg-red-300"
+              : ""
+          } `}
+          onClick={() => {
+            setSelectedShapeType("custom-shape");
+          }}
+        >
+          custom shape
+        </button>
+      </div>
+      <div className="border-solid border-red-500 border-4 relative  w-[750px] h-[450px] ">
+        <video
+          src={xy}
+          controls
+          autoPlay={true}
+          loop={true}
+          width={250}
+          height={250}
+          className="w-full h-full absolute left-0 right-0 top-0 bottom-0  z-[-10]"
+        ></video>
+        <svg
+          className="bg-transparent w-full h-full absolute left-0 right-0 top-0 bottom-0  z-60"
+          onClick={(e) => {
+            handleClick(e);
+          }}
+        >
+          {lines.map((line, index) => (
+            <line
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log("line is clicked ... ", e.target);
+              }}
+              key={index}
+              x1={line.x1}
+              y1={line.y1}
+              x2={line.x2}
+              y2={line.y2}
+              stroke="black"
+              strokeWidth={3}
+            />
+          ))}
+          {circles.map((circle, index) => (
+            <circle
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log("clicked on circle ", e.target);
+                if (index === 0) {
+                  connectTOFirst(circles[circles.length - 1]);
+                }
+              }}
+              key={index}
+              cx={circle.cx}
+              cy={circle.cy}
+              r={circle.r}
+              fill="red"
+            />
+          ))}
+        </svg>
+      </div>
+    </>
   );
 }
