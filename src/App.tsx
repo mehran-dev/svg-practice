@@ -33,6 +33,19 @@ export default function App({}: Props) {
     }
   };
 
+  const connectTOFirst = (lastCircle) => {
+    // more than 1 circle !!!
+    if (circles.length > 1) {
+      const firstCircle = circles[0];
+      const newLine = {
+        x1: lastCircle.cx,
+        y1: lastCircle.cy,
+        x2: firstCircle.cx,
+        y2: firstCircle.cy,
+      };
+      setLines([...lines, newLine]);
+    }
+  };
   return (
     <div className="border-solid border-red-500 border-4 relative  w-[750px] h-[450px] ">
       <video
@@ -69,7 +82,10 @@ export default function App({}: Props) {
           <circle
             onClick={(e) => {
               e.stopPropagation();
-              console.log("circle is clicked ... ", e.target);
+              console.log("clicked on circle ", e.target);
+              if (index === 0) {
+                connectTOFirst(circles[circles.length - 1]);
+              }
             }}
             key={index}
             cx={circle.cx}
@@ -78,11 +94,6 @@ export default function App({}: Props) {
             fill="red"
           />
         ))}
-        {/* <rect x="48" y="8" rx="3" ry="3" width="88" height="6" />
-        <rect x="48" y="26" rx="3" ry="3" width="52" height="6" />
-        <rect x="0" y="56" rx="3" ry="3" width="410" height="6" />
-        <rect x="0" y="72" rx="3" ry="3" width="380" height="6" />
-      <rect x="0" y="88" rx="3" ry="3" width="178" height="6" /> */}
       </svg>
     </div>
   );
