@@ -9,7 +9,52 @@ export default function App({}: Props) {
     "custom-shape" | "line"
   >("custom-shape");
 
-  const handleClick = (e) => {
+  const [lineStart, setLineStart] = useState<{ x: number; y: number } | null>(
+    null
+  );
+
+  const handleShapeTypeSwitch = (type: "custom-shape" | "line") => {
+    setSelectedShapeType(type);
+    setShapes((prevShapes) => [...prevShapes, { circles: [], lines: [] }]);
+    setLineStart(null);
+  };
+
+  const drawLineHandler = (e) => {
+    e.stopPropagation();
+
+    const svg = e.target.closest("svg");
+    const rect = svg.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const currentShape = shapes[shapes.length - 1];
+
+    if (!lineStart) {
+      // Set the starting point and add a circle
+      setLineStart({ x, y });
+      const newCircle = { cx: x, cy: y, r: 5 };
+      const newCircles = [...currentShape.circles, newCircle];
+      setShapes([
+        ...shapes.slice(0, -1),
+        { circles: newCircles, lines: currentShape.lines },
+      ]);
+    } else {
+      // Draw the line from start to current point and add a circle at the end point
+      const newLine = { x1: lineStart.x, y1: lineStart.y, x2: x, y2: y };
+      const newCircle = { cx: x, cy: y, r: 5 };
+      const newCircles = [...currentShape.circles, newCircle];
+      const updatedLines = [...currentShape.lines, newLine];
+      setShapes([
+        ...shapes.slice(0, -1),
+        { circles: newCircles, lines: updatedLines },
+      ]);
+
+      // Reset lineStart for next line
+      setLineStart(null);
+    }
+  };
+
+  const drawShapeHandler = (e) => {
     e.stopPropagation();
     console.log(e.target);
 
@@ -82,7 +127,7 @@ export default function App({}: Props) {
               : ""
           } `}
           onClick={() => {
-            setSelectedShapeType("line");
+            handleShapeTypeSwitch("line");
           }}
         >
           line
@@ -94,7 +139,7 @@ export default function App({}: Props) {
               : ""
           } `}
           onClick={() => {
-            setSelectedShapeType("custom-shape");
+            handleShapeTypeSwitch("custom-shape");
           }}
         >
           custom shape
@@ -113,7 +158,11 @@ export default function App({}: Props) {
         <svg
           className="bg-transparent w-full h-full absolute left-0 right-0 top-0 bottom-0 z-60"
           onClick={(e) => {
-            handleClick(e);
+            if (selectedShapeType === "line") {
+              drawLineHandler(e);
+            } else {
+              drawShapeHandler(e);
+            }
           }}
         >
           {shapes.map((shape, shapeIndex) => (
@@ -139,7 +188,7 @@ export default function App({}: Props) {
                     e.stopPropagation();
                     console.log("clicked on circle ", e.target, circleIndex);
                     if (circleIndex === 0) {
-                      closeShape(circle);
+                      closeShape();
                     }
                   }}
                   key={circleIndex}
