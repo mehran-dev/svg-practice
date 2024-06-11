@@ -44,8 +44,7 @@ export default function App({}: Props) {
     setShapes(updatedShapes);
   };
 
-  // rename this to close the shape
-  const connectToFirst = () => {
+  const closeShape = () => {
     const currentShape = shapes[shapes.length - 1];
     if (currentShape.circles.length > 1) {
       const firstCircle = currentShape.circles[0];
@@ -66,9 +65,9 @@ export default function App({}: Props) {
         { circles: currentShape.circles, lines: newLines },
       ]);
 
-      return setTimeout(() => {
-        setShapes((prevShapes) => [...prevShapes, { circles: [], lines: [] }]);
-      }, 200);
+      // return setTimeout(() => {
+      setShapes((prevShapes) => [...prevShapes, { circles: [], lines: [] }]);
+      // }, 200);
     }
   };
   console.log("shapes", shapes);
@@ -140,14 +139,14 @@ export default function App({}: Props) {
                     e.stopPropagation();
                     console.log("clicked on circle ", e.target, circleIndex);
                     if (circleIndex === 0) {
-                      connectToFirst(circle);
+                      closeShape(circle);
                     }
                   }}
                   key={circleIndex}
                   cx={circle.cx}
                   cy={circle.cy}
                   r={circle.r}
-                  fill="red"
+                  fill={`${circleIndex === 0 ? "yellow" : "red"}`}
                 />
               ))}
             </g>
